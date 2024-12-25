@@ -5,7 +5,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .filters import ProductFilter, CategoryFilter, BrandsFilter, CategoryparamsFilter, ProductparamsFilter
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.views import APIView
-from .models import Product, Category, Brands, Categoryparams, Productparams, Sku
+from .models import Product, Category, Brands, Categoryparams, Productparams, Sku, ProductImage
 from .serializers import ProductSerializer, CategorySerializer, BrandsSerializer, CategoryparamsSerializer, ProductparamsSerializer, RegisterSerializer, SkuSerializer
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -16,6 +16,8 @@ from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
 from .permission import SellerUserOrRead
 from rest_framework.permissions import DjangoModelPermissions
+from rest_framework.parsers import MultiPartParser, FormParser
+from .serializers import ProductImageSerializer
 
 
 
@@ -359,7 +361,16 @@ class ProductSearchApi(APIView):
         serializer = ProductSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
-    
+class ProductImageUpload(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+    def post(self, request, product_id):
+        product = Product.objects.get(id=product_id)
+
+        images = request.FILES.getlist('images')
+        for image in images:
+            ProductImage.objects.create(product=product, image=image)
+
+        return Response({"message": "Images uploaded successfully"}, status=status.HTTP_200_OK)
 
     
 

@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import ProductListView, ProductCreateView, ProductAPI, CategoryListView, CategoryDetailView, CategoryApi, BrandsDetailView, BrandsListView, BrandApi, CategoryparamsListView, CategoryparamsApi, CategoryparamsDetailView, ProductparamsListView, ProductparamsDetailView, ProductparamsApi, RegisterView, LoginView, SkuListView, SkuApi, SkuDetailView, ProductSearchApi, LogoutView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import ProductViewSet, BrandsViewSet, CategoryViewSet
+from .views import ProductViewSet, BrandsViewSet, CategoryViewSet, ProductImageUpload
 from rest_framework.routers import DefaultRouter
 from .views import search_products
 from django.conf.urls.static import static
@@ -50,6 +50,9 @@ urlpatterns = [
 
     # Search API
     path('products/search/', ProductSearchApi.as_view(), name='product-search'),
+
+    # Image upload  
+    path('products/<int:product_id>/images/', ProductImageUpload.as_view(), name='product-image_upload')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
