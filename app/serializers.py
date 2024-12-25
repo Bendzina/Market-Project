@@ -1,8 +1,19 @@
 from rest_framework import serializers
-from .models import Product, Category, Brands, Categoryparams, Productparams, Sku
+from .models import Product, Category, Brands, Categoryparams, Productparams, Sku, ProductImage
 from django.contrib.auth.models import User
 
+# for images 
+
+
+class ProductImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = '__all__'
+
+
+
 class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)
     class Meta:
         model = Product
         fields = '__all__'
@@ -55,3 +66,4 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(validated_data['username'], validated_data['email'], validated_data['password'])
         return user
+

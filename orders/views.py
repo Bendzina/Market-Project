@@ -33,6 +33,15 @@ class AddCartItemView(APIView):
             # CartItem-ის მოძიება ან შექმნა
             cart_item, cart_item_created = CartItem.objects.get_or_create(cart=cart, sku=sku)
 
+            # shipping information
+
+            cart_item_weight = product.weight
+            cart_item_length = product.length
+            cart_item_width = product.width
+            cart_item_height = product.height
+
+          
+
             # სტოკის შემოწმება დამატებამდე:
             new_quantity = cart_item.quantity + int(request.data.get("quantity", 1))
             if product.stock < new_quantity:

@@ -4,6 +4,10 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import ProductViewSet, BrandsViewSet, CategoryViewSet
 from rest_framework.routers import DefaultRouter
 from .views import search_products
+from django.conf.urls.static import static
+from django.conf import settings
+
+
 urlpatterns = [
     # Product URLs
     path('products/', ProductListView.as_view(), name='product-list-view'),
@@ -46,11 +50,11 @@ urlpatterns = [
 
     # Search API
     path('products/search/', ProductSearchApi.as_view(), name='product-search'),
-
-
-
-
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
 # viewset
 router = DefaultRouter()
 router.register(r'products', ProductViewSet)
@@ -58,6 +62,8 @@ router.register(r'brands', BrandsViewSet)
 router.register(r'categories', CategoryViewSet)
 
 urlpatterns += router.urls
+
+
 
 # http://127.0.0.1:8000/products-list/
 

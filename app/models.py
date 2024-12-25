@@ -1,4 +1,6 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+
 
 class Store(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -33,7 +35,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     stock = models.IntegerField(null=False)
     brandid = models.ForeignKey(Brands, on_delete=models.CASCADE)
-    
+
 
     # New fields for shipping information
     weight = models.DecimalField(max_digits=10, decimal_places=2, default=1, null=False, help_text="Weight in kg")
@@ -42,8 +44,9 @@ class Product(models.Model):
     height = models.DecimalField(max_digits=10, decimal_places=2, default=5, null=False, help_text="Height in cm")
 
     storeid = models.ForeignKey(Store, on_delete=models.CASCADE, null=True)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
         return self.name
 
@@ -63,6 +66,7 @@ class Productparams(models.Model):
     key = models.CharField(max_length=100)
     value = models.CharField(max_length=200)
 
+
     def __str__(self):
         return self.key
 
@@ -74,6 +78,21 @@ class Categoryparams(models.Model):
     def __str__(self):
         return self.key
     
+class ProductImage(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='media/products/images', blank=False, null=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if self.product.images.count() >= 6:
+            raise ValidationError("You can only upload a maximum of 6 images for a product")
+        super(ProductImage, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.product.name} - Image {self.id}"
+        
+
 
 
 

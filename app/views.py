@@ -11,30 +11,18 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import IsAdminUser, BasePermission
+from .permission import SellerUserOrRead
+from rest_framework.permissions import DjangoModelPermissions
 
 
-
-# class SellerPermission(BasePermission):
-#     def has_permission(self, request, view):
-#         # მომხმარებელი უნდა იყოს ავტორიზებული და 'Sellers' ჯგუფის წევრი
-#         return request.user.is_authenticated and request.user.groups.filter(name='Sellers').exists()
-
-class SellerPermission(BasePermission):
-    def has_permission(self, request, view):
-        is_authenticated = request.user.is_authenticated
-        in_sellers_group = request.user.groups.filter(name='Sellers').exists()
-        print(f"Authenticated: {is_authenticated}, In Sellers Group: {in_sellers_group}")
-        return is_authenticated and in_sellers_group
-        
 
 
 # Product Views
 class ProductCreateView(CreateAPIView):
-    permission_classes = [SellerPermission]
+    permission_classes = [SellerUserOrRead]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
