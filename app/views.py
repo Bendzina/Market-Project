@@ -18,6 +18,7 @@ from .permission import SellerUserOrRead
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import ProductImageSerializer
+from django.core.exceptions import ValidationError
 
 
 
@@ -364,11 +365,24 @@ class ProductSearchApi(APIView):
 class ProductImageUpload(APIView):
     parser_classes = [MultiPartParser, FormParser]
     def post(self, request, product_id):
-        product = Product.objects.get(id=product_id)
+        print(request.FILES)
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
         images = request.FILES.getlist('images')
+        if not images:
+            return Response({"error": "No images provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if product.imagescount() + len(images) > 6:
+            return Response({"error": "Maximum number of images reached"}, status=status.HTTP_400_BAD_REQUEST)
+        
         for image in images:
-            ProductImage.objects.create(product=product, image=image)
+            try:
+                ProductImage.objects.create(product=product, image=image)
+            except ValidationError as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"message": "Images uploaded successfully"}, status=status.HTTP_200_OK)
 

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
+    thumbnail_url = serializers.SerializerMethodField()
     class Meta:
         model = ProductImage
         fields = '__all__'

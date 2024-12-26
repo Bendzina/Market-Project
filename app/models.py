@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
 
 
 class Store(models.Model):
@@ -46,9 +48,12 @@ class Product(models.Model):
     storeid = models.ForeignKey(Store, on_delete=models.CASCADE, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    
 
     def __str__(self):
         return self.name
+    def imagescount(self):
+        return self.productimage_set.count()
 
 class Sku(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -81,13 +86,21 @@ class Categoryparams(models.Model):
 class ProductImage(models.Model):
     id = models.BigAutoField(primary_key=True)
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/products/images', blank=False, null=False)
+    image = models.ImageField(upload_to='products/images', blank=False, null=False)
+    thumbnail = ProcessedImageField(
+        upload_to='products/images/thumbnails',
+        processors=[ResizeToFill(100, 100)],
+        format='JPEG',
+        options={'quality': 80},
+        blank=True,
+        null=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if self.product.images.count() >= 6:
             raise ValidationError("You can only upload a maximum of 6 images for a product")
-        super(ProductImage, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.product.name} - Image {self.id}"

@@ -7,7 +7,4 @@ class SellerUserOrRead(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True  
         return request.user.is_authenticated and request.user.has_perm('app.add_product')
-
-        
-
-
+    

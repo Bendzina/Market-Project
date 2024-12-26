@@ -52,7 +52,7 @@ urlpatterns = [
     path('products/search/', ProductSearchApi.as_view(), name='product-search'),
 
     # Image upload  
-    path('products/<int:product_id>/images/', ProductImageUpload.as_view(), name='product-image_upload')
+    path('products/<int:product_id>/images/', ProductImageUpload.as_view(), name='product-image-upload')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
