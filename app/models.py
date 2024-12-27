@@ -86,7 +86,7 @@ class Categoryparams(models.Model):
 class ProductImage(models.Model):
     id = models.BigAutoField(primary_key=True)
     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='products/images', blank=False, null=False)
+    image = models.ImageField(upload_to='media/products/images/', blank=False, null=False)
     thumbnail = ProcessedImageField(
         upload_to='products/images/thumbnails',
         processors=[ResizeToFill(100, 100)],

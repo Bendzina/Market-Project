@@ -373,6 +373,7 @@ class ProductImageUpload(APIView):
 
         images = request.FILES.getlist('images')
         if not images:
+            print("No images")
             return Response({"error": "No images provided"}, status=status.HTTP_400_BAD_REQUEST)
         
         if product.imagescount() + len(images) > 6:

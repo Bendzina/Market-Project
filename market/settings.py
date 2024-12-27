@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'app',
     'django_filters',
     'orders',
+    'imagekit'
 
     ]
 

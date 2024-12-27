@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Store, Productparams
+from .models import Product, Store, Productparams, ProductImage
 
 @admin.register(Store)
 class StoreAdmin(admin.ModelAdmin):
@@ -20,3 +20,9 @@ class ProductparamsAdmin(admin.ModelAdmin):
     list_display = ['productid', 'key', 'value', ]
 
     search_fields = ['key', 'value']
+
+@admin.register(ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ['product', 'created_at']
+
+    search_fields = ['product__name']
