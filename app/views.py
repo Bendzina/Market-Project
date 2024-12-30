@@ -19,6 +19,7 @@ from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import ProductImageSerializer
 from django.core.exceptions import ValidationError
+from imagekit.cachefiles import ImageCacheFile
 
 
 
@@ -362,31 +363,87 @@ class ProductSearchApi(APIView):
         serializer = ProductSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
+# class ProductImageUpload(APIView):
+#     parser_classes = [MultiPartParser, FormParser]
+#     def post(self, request, product_id):
+#         try:
+#             product = Product.objects.get(id=product_id)
+#         except Product.DoesNotExist:
+#             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+#         images = request.FILES.getlist('images')
+#         if not images:
+#             print("No images")
+#             return Response({"error": "No images provided"}, status=status.HTTP_400_BAD_REQUEST)
+        
+#         if product.imagescount() + len(images) > 6:
+#             return Response({"error": "Maximum number of images reached"}, status=status.HTTP_400_BAD_REQUEST)
+        
+#         for image in images:
+#             try:
+#                 ProductImage.objects.create(product=product, image=image)
+#             except ValidationError as e:
+#                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+#         return Response({"message": "Images uploaded successfully"}, status=status.HTTP_200_OK)
+
+    
+
+
 class ProductImageUpload(APIView):
     parser_classes = [MultiPartParser, FormParser]
-    def post(self, request, product_id):
-        print(request.FILES)
+    def post(self, request, *args, **kwargs):
+        # GET product ID
+        product_id = request.data.get('product_id')
+        if not product_id:
+            return Response({"error": "Product ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # GET files
+        images = request.FILES.getlist('images')  # key: 'images'
+
+        if not images:
+            return Response({"error": "No images provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Product existence check
         try:
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        images = request.FILES.getlist('images')
-        if not images:
-            print("No images")
-            return Response({"error": "No images provided"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        if product.imagescount() + len(images) > 6:
-            return Response({"error": "Maximum number of images reached"}, status=status.HTTP_400_BAD_REQUEST)
-        
+        # Save each image
         for image in images:
             try:
-                ProductImage.objects.create(product=product, image=image)
+                product_image = ProductImage.objects.create(product=product, image=image)
+                # if product_image.thumbnail:
+                #     cached_file = ImageCacheFile(product_image.thumbnail)
+                #     if not cached_file.exists():
+                #         cached_file.generate()
             except ValidationError as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({"message": "Images uploaded successfully"}, status=status.HTTP_200_OK)
+        return Response({
+            "id": product_image.id,
+            "image": product_image.image.url,
+            "thumbnail": product_image.thumbnail.url,  # ეს დამატებული უნდა იყოს
+            "created_at": product_image.created_at,
+            "product": product.id
+        }, status=status.HTTP_201_CREATED)
+class ProductImageListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ProductImageSerializer
 
+    def get_queryset(self):
+        product_id = self.kwargs['product_id']
+        return ProductImage.objects.filter(product_id=product_id)
     
+class ProductImageDelete(APIView):
+    permission_classes = [IsAuthenticated]
 
-
+    def delete(self, request, image_id, *args, **kwargs):
+        try:
+            # მოძებნე სურათი მისი ID-ით
+            product_image = ProductImage.objects.get(id=image_id)
+            product_image.delete()  # წაშალე სურათი
+            return Response({"message": "Image deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        except ProductImage.DoesNotExist:
+            return Response({"error": "Image not found"}, status=status.HTTP_404_NOT_FOUND)

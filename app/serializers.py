@@ -6,11 +6,18 @@ from django.contrib.auth.models import User
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
-    thumbnail_url = serializers.SerializerMethodField()
+    thumbnail = serializers.SerializerMethodField()
     class Meta:
         model = ProductImage
         fields = '__all__'
 
+    def get_thumbnail(self, obj):
+        if obj.thumbnail and hasattr(obj.thumbnail, 'url'):
+            try:
+                return obj.thumbnail.url
+            except FileNotFoundError:
+                return None  # ან placeholder სურათის URL
+        return None
 
 
 class ProductSerializer(serializers.ModelSerializer):

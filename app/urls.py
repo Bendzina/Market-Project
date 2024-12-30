@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProductListView, ProductCreateView, ProductAPI, CategoryListView, CategoryDetailView, CategoryApi, BrandsDetailView, BrandsListView, BrandApi, CategoryparamsListView, CategoryparamsApi, CategoryparamsDetailView, ProductparamsListView, ProductparamsDetailView, ProductparamsApi, RegisterView, LoginView, SkuListView, SkuApi, SkuDetailView, ProductSearchApi, LogoutView
+from .views import ProductListView, ProductCreateView, ProductAPI, CategoryListView, CategoryDetailView, CategoryApi, BrandsDetailView, BrandsListView, BrandApi, CategoryparamsListView, CategoryparamsApi, CategoryparamsDetailView, ProductparamsListView, ProductparamsDetailView, ProductparamsApi, RegisterView, LoginView, SkuListView, SkuApi, SkuDetailView, ProductSearchApi, LogoutView, ProductImageListView, ProductImageDelete
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import ProductViewSet, BrandsViewSet, CategoryViewSet, ProductImageUpload
 from rest_framework.routers import DefaultRouter
@@ -52,7 +52,10 @@ urlpatterns = [
     path('products/search/', ProductSearchApi.as_view(), name='product-search'),
 
     # Image upload  
-    path('products/<int:product_id>/images/', ProductImageUpload.as_view(), name='product-image-upload')
+    path('products/<int:product_id>/images/', ProductImageUpload.as_view(), name='product-image-upload'),
+    path('products/<int:product_id>/images/list/', ProductImageListView.as_view(), name='product-image-list'),
+    path('products/images/<int:image_id>/delete/', ProductImageDelete.as_view(), name='product-image-delete'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

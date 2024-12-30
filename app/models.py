@@ -2,6 +2,13 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from imagekit.models import ProcessedImageField
 from imagekit.processors import ResizeToFill
+from imagekit.cachefiles import ImageCacheFile
+from imagekit.cachefiles.backends import Simple
+from PIL import Image
+import os
+from django.conf import settings
+from imagekit.models import ImageSpecField
+
 
 
 class Store(models.Model):
@@ -83,33 +90,76 @@ class Categoryparams(models.Model):
     def __str__(self):
         return self.key
     
+# class ProductImage(models.Model):
+#     id = models.BigAutoField(primary_key=True)
+#     product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
+#     image = models.ImageField(upload_to='media/products/images/', blank=False, null=False)
+#     thumbnail = ProcessedImageField(
+#         upload_to='products/images/thumbnails',
+#         processors=[ResizeToFill(100, 100)],
+#         format='JPEG',
+#         options={'quality': 80},
+#         blank=True,
+#         null=True,
+#     )
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def save(self, *args, **kwargs):
+#         if self.product.images.count() >= 6:
+#             raise ValidationError("You can only upload a maximum of 6 images for a product")
+#         super().save(*args, **kwargs)
+    
+
+#     def __str__(self):
+#         return f"{self.product.name} - Image {self.id}"
+        
+
+# class ProductImage(models.Model):
+#     id = models.BigAutoField(primary_key=True)
+#     product = models.ForeignKey('Product', related_name='images', on_delete=models.CASCADE)
+#     image = models.ImageField(upload_to='products/images/', blank=False, null=False)
+#     thumbnail = models.ImageField(upload_to='products/images/thumbnails/', blank=True, null=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def save(self, *args, **kwargs):
+#         super().save(*args, **kwargs)
+
+#         # Thumbnail-ის გენერაცია Pillow-ის გამოყენებით
+#         if self.image and not self.thumbnail:
+#             self.generate_thumbnail()
+
+#     def generate_thumbnail(self):
+#         image_path = self.image.path
+#         thumbnail_path = os.path.join(
+#             settings.MEDIA_ROOT,
+#             'products/images/thumbnails',
+#             os.path.basename(self.image.name)
+#         )
+
+#         # Pillow ბიბლიოთეკის გამოყენება თუმბნეილის შესაქმნელად
+#         with Image.open(image_path) as img:
+#             if img.mode == 'RGBA':
+#                 img = img.convert('RGB')
+#             img.thumbnail((100, 100))  # თუმბნეილის ზომა
+#             img.save(thumbnail_path, format='JPEG')
+
+#         # Thumbnail-ის მითითება მოდელში
+#         self.thumbnail = f'products/images/thumbnails/{os.path.basename(self.image.name)}'
+#         super().save(update_fields=['thumbnail'])
+
+#     def __str__(self):
+#         return f"{self.product.name} - Image {self.id}"
+    
 class ProductImage(models.Model):
     id = models.BigAutoField(primary_key=True)
-    product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/products/images/', blank=False, null=False)
-    thumbnail = ProcessedImageField(
-        upload_to='products/images/thumbnails',
-        processors=[ResizeToFill(100, 100)],
-        format='JPEG',
-        options={'quality': 80},
-        blank=True,
-        null=True,
-    )
+    product = models.ForeignKey('Product', related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='products/images/', blank=False, null=False)
+    thumbnail = ImageSpecField(source='image', processors=[ResizeToFill(100, 100)], format='JPEG', options={'quality': 60})
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def save(self, *args, **kwargs):
-        if self.product.images.count() >= 6:
-            raise ValidationError("You can only upload a maximum of 6 images for a product")
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.product.name} - Image {self.id}"
-        
-
-
-
-
-
-
-
-
+    
+    @property
+    def thumbnail_url(self):
+        return self.thumbnail.url if self.thumbnail else None
