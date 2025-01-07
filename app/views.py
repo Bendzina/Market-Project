@@ -14,19 +14,20 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny, IsAdminUser
 from django.db.models import Q
 from rest_framework.pagination import PageNumberPagination
-from .permission import SellerUserOrRead
+from .permission import BasePermission, SellerPermission
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import ProductImageSerializer
 from django.core.exceptions import ValidationError
 from imagekit.cachefiles import ImageCacheFile
+from rest_framework.authentication import TokenAuthentication
 
 
 
 
 # Product Views
 class ProductCreateView(CreateAPIView):
-    permission_classes = [SellerUserOrRead]
+    permission_classes = [SellerPermission]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -40,26 +41,59 @@ class ProductListView(generics.ListAPIView):
 
 
 
+# class ProductAPI(APIView):
+#     permission_classes = [IsAuthenticated]
+#     def get(self, request):
+#         products = Product.objects.all()
+#         filtered_products = ProductFilter(request.GET, queryset=products)
+#         if filtered_products.is_valid():
+#             serializer = ProductSerializer(filtered_products.qs, many=True)
+#             return Response(serializer.data)
+#         return Response(filtered_products.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def post(self, request):
+#         if not request.user.has_perm('app.add_product') or not request.user.is_superuser:
+#             return Response({'error': 'Only superusers or sellers can create products'}, status=status.HTTP_403_FORBIDDEN)
+        
+#         # if not request.user.is_superuser:
+#         #     return Response({'error': 'Only superusers can create products'}, status=status.HTTP_403_FORBIDDEN)
+#         serializer = ProductSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# class ProductAPI(APIView):
+#     permission_classes = [IsAuthenticated, SellerPermission]
+
+#     def get(self, request):
+#         products = Product.objects.all()
+#         serializer = ProductSerializer(products, many=True)
+#         return Response(serializer.data)
+
+#     def post(self, request):
+#         if not request.user.has_perm('app.add_product'):
+#             return Response({'error': 'Only sellers can create products'}, status=status.HTTP_403_FORBIDDEN)
+        
+#         serializer = ProductSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class ProductAPI(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         products = Product.objects.all()
-        filtered_products = ProductFilter(request.GET, queryset=products)
-        if filtered_products.is_valid():
-            serializer = ProductSerializer(filtered_products.qs, many=True)
-            return Response(serializer.data)
-        return Response(filtered_products.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data)
+    
+    permission_classes = [SellerPermission]
     def post(self, request):
-        if not request.user.is_superuser:
-            return Response({'error': 'Only superusers can create products'}, status=status.HTTP_403_FORBIDDEN)
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 # Category Views
 class CategoryCreateView(CreateAPIView):
     permission_classes = [IsAdminUser]
@@ -363,31 +397,7 @@ class ProductSearchApi(APIView):
         serializer = ProductSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
-# class ProductImageUpload(APIView):
-#     parser_classes = [MultiPartParser, FormParser]
-#     def post(self, request, product_id):
-#         try:
-#             product = Product.objects.get(id=product_id)
-#         except Product.DoesNotExist:
-#             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
 
-#         images = request.FILES.getlist('images')
-#         if not images:
-#             print("No images")
-#             return Response({"error": "No images provided"}, status=status.HTTP_400_BAD_REQUEST)
-        
-#         if product.imagescount() + len(images) > 6:
-#             return Response({"error": "Maximum number of images reached"}, status=status.HTTP_400_BAD_REQUEST)
-        
-#         for image in images:
-#             try:
-#                 ProductImage.objects.create(product=product, image=image)
-#             except ValidationError as e:
-#                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-#         return Response({"message": "Images uploaded successfully"}, status=status.HTTP_200_OK)
-
-    
 
 
 class ProductImageUpload(APIView):
