@@ -117,7 +117,3 @@ class ProductImage(models.Model):
     def thumbnail_url(self):
         return self.thumbnail.url if self.thumbnail else None
     
-    
-# class UserProfile(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     is_seller = models.BooleanField(default=False)    

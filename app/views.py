@@ -40,46 +40,6 @@ class ProductListView(generics.ListAPIView):
     filterset_class = ProductFilter
 
 
-
-# class ProductAPI(APIView):
-#     permission_classes = [IsAuthenticated]
-#     def get(self, request):
-#         products = Product.objects.all()
-#         filtered_products = ProductFilter(request.GET, queryset=products)
-#         if filtered_products.is_valid():
-#             serializer = ProductSerializer(filtered_products.qs, many=True)
-#             return Response(serializer.data)
-#         return Response(filtered_products.errors, status=status.HTTP_400_BAD_REQUEST)
-
-#     def post(self, request):
-#         if not request.user.has_perm('app.add_product') or not request.user.is_superuser:
-#             return Response({'error': 'Only superusers or sellers can create products'}, status=status.HTTP_403_FORBIDDEN)
-        
-#         # if not request.user.is_superuser:
-#         #     return Response({'error': 'Only superusers can create products'}, status=status.HTTP_403_FORBIDDEN)
-#         serializer = ProductSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# class ProductAPI(APIView):
-#     permission_classes = [IsAuthenticated, SellerPermission]
-
-#     def get(self, request):
-#         products = Product.objects.all()
-#         serializer = ProductSerializer(products, many=True)
-#         return Response(serializer.data)
-
-#     def post(self, request):
-#         if not request.user.has_perm('app.add_product'):
-#             return Response({'error': 'Only sellers can create products'}, status=status.HTTP_403_FORBIDDEN)
-        
-#         serializer = ProductSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 class ProductAPI(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
@@ -424,10 +384,7 @@ class ProductImageUpload(APIView):
         for image in images:
             try:
                 product_image = ProductImage.objects.create(product=product, image=image)
-                # if product_image.thumbnail:
-                #     cached_file = ImageCacheFile(product_image.thumbnail)
-                #     if not cached_file.exists():
-                #         cached_file.generate()
+   
             except ValidationError as e:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
