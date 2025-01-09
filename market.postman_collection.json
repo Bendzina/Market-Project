@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "categories",
+			"name": "Categories",
 			"item": [
 				{
 					"name": "create",
@@ -24,12 +24,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/app/categories-api/",
+							"raw": "{{baseurl}}/categories-api/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
 								"categories-api",
 								""
 							]
@@ -43,14 +42,41 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/app/categories-api/",
+							"raw": "{{baseurl}}/categories-api/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
 								"categories-api",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "filter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/productparams/?key=camera&value=15px",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"productparams",
+								""
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "camera"
+								},
+								{
+									"key": "value",
+									"value": "15px"
+								}
 							]
 						}
 					},
@@ -59,7 +85,7 @@
 			]
 		},
 		{
-			"name": "products",
+			"name": "Products",
 			"item": [
 				{
 					"name": "Get",
@@ -67,13 +93,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/app/products-api/",
+							"raw": "{{baseurl}}/products/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
-								"products-api",
+								"products",
 								""
 							]
 						}
@@ -83,11 +108,21 @@
 				{
 					"name": "create",
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM1NjM2NTM2LCJpYXQiOjE3MzU2MzM1MzYsImp0aSI6IjUxNzA2ODExNDViMDQ0NTg5MjcwOTQzZTE2NWUxMmRmIiwidXNlcl9pZCI6MX0.cIcXW51l2M3fz5IEjdDJyI3Z3vYLwA4PPWgh4vTCDZw",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Galaxy S\",\n    \"price\": 1000,\n    \"catid\": 2, \n    \"stock\": 4, \n    \"brand\": \"Samsung\"  \n}\n",
+							"raw": "{\n        \"name\": \"test2\",\n        \"price\": \"200.00\",\n        \"stock\": 4,\n        \"catid\": 4,\n        \"brandid\": \"2\"\n    }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -95,12 +130,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/app/products-api/",
+							"raw": "{{baseurl}}/products-api/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
 								"products-api",
 								""
 							]
@@ -119,13 +153,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/app/productparams-api",
+							"raw": "{{baseurl}}/productparams-api/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
-								"productparams-api"
+								"productparams-api",
+								""
 							]
 						}
 					},
@@ -146,13 +180,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/app/productparams-api",
+							"raw": "{{baseurl}}/productparams-api/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
-								"productparams-api"
+								"productparams-api",
+								""
 							]
 						}
 					},
@@ -169,13 +203,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/app/categoryparams-api",
+							"raw": "{{baseurl}}/categoryparams/1/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
-								"categoryparams-api"
+								"categoryparams",
+								"1",
+								""
 							]
 						}
 					},
@@ -196,13 +231,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/app/categoryparams-api",
+							"raw": "{{baseurl}}/categoryparams-api/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
-								"categoryparams-api"
+								"categoryparams-api",
+								""
 							]
 						}
 					},
@@ -219,12 +254,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseurl}}/app/brands-api/",
+							"raw": "{{baseurl}}/brands-api/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
 								"brands-api",
 								""
 							]
@@ -247,13 +281,542 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseurl}}/app/brands-api/",
+							"raw": "{{baseurl}}/brands-api/",
 							"host": [
 								"{{baseurl}}"
 							],
 							"path": [
-								"app",
 								"brands-api",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sku",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/skus-api/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"skus-api",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"productid\": 4\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/skus-api/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"skus-api",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"benz1\",\n    \"password\": \"lil\",\n    \"password2\": \"lil\",\n    \"email\": \"bendzina@gmail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}registrations/",
+							"host": [
+								"{{baseurl}}registrations"
+							],
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "seller log",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"benz1\",\n    \"password\": \"lil\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/login/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\":\"1234leader\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/login/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"user\",\n    \"password\": \"lil19\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/login/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNTI4ODAyOCwiaWF0IjoxNzM0NjgzMjI4LCJqdGkiOiJkZWNiMTIwOTcxZjQ0ZWU1OTNlZjRiZDUwZDc1MjBlNiIsInVzZXJfaWQiOjJ9.WqFLNlKbtuCaJ14j-XhrZyTnkDOx67V0HXHRckQHB7o\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl}}/logout/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"logout",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "adding cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/cart/add/3/",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"cart",
+								"add",
+								"3",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "order view",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseurl2}}/cart/",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"cart",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl2}}/cart/delete/8/",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"cart",
+								"delete",
+								"8",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update cart",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl2}}/cart/update/1/",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"cart",
+								"update",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checkout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl2}}/cart/checkout/",
+							"host": [
+								"{{baseurl2}}"
+							],
+							"path": [
+								"cart",
+								"checkout",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "product search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/products/search/?name=iphone&param_key=color&param_value=red",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"products",
+								"search",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "iphone"
+								},
+								{
+									"key": "param_key",
+									"value": "color"
+								},
+								{
+									"key": "param_value",
+									"value": "red"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Paginator",
+			"item": [
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/products/?page=2",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"products",
+								""
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product images",
+			"item": [
+				{
+					"name": "upload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {",
+									"    pm.expect(pm.response.code).to.equal(400);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response has the required fields\", function () {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData.error).to.exist;",
+									"});",
+									"",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 200ms\", function () {",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_id",
+									"value": "3",
+									"contentType": "text",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"contentType": "",
+									"type": "file",
+									"src": "postman-cloud:///1efc6a5d-5d58-4b20-9898-07d032a66619"
+								},
+								{
+									"key": "thumbnail",
+									"contentType": "multipart/form-data",
+									"type": "file",
+									"src": "postman-cloud:///1efc6a5d-5d58-4b20-9898-07d032a66619",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseurl}}/products/1/images/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"products",
+								"1",
+								"images",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete image",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseurl}}/products/images/45/delete/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"products",
+								"images",
+								"45",
+								"delete",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "image view",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{baseurl}}/products/3/images/list/",
+							"host": [
+								"{{baseurl}}"
+							],
+							"path": [
+								"products",
+								"3",
+								"images",
+								"list",
 								""
 							]
 						}
@@ -263,6 +826,16 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM2MTYxMjQ4LCJpYXQiOjE3MzYxNTgyNDgsImp0aSI6IjBlZDM0NDQwNTc0NDQyOTJiNzk0ZjczYjhjOTVjOWRhIiwidXNlcl9pZCI6MX0.wYhTHVW0E1hUnvTl2294NLa9CUpcSwnZe28QxZXl-Bs",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
