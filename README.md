@@ -38,4 +38,23 @@ API Endpoint-ები
 პროექტი ასევე მოიცავს REST API-ს, რომელიც საშუალებას გაძლევთ მართოთ პროდუქტები და სურათები პროგრამულად. 
 
 
+მომხმარებლები
+
+admin user:
+
+{
+    "username": "admin",
+    "password":"1234leader"
+}
+
+seller user:
+
+{
+    "username": "benz1",
+    "password": "lil"
+}
+
+
+
+
 
