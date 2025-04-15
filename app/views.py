@@ -21,6 +21,7 @@ from .serializers import ProductImageSerializer
 from django.core.exceptions import ValidationError
 from imagekit.cachefiles import ImageCacheFile
 from rest_framework.authentication import TokenAuthentication
+from django.shortcuts import render
 
 
 
@@ -414,3 +415,18 @@ class ProductImageDelete(APIView):
             return Response({"message": "Image deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         except ProductImage.DoesNotExist:
             return Response({"error": "Image not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+#front
+
+def product_page(request):
+    categories = Category.objects.all()
+    products_by_category = {}
+
+    for category in categories:
+        products = Product.objects.filter(catid=category)
+        products_by_category[category] = products
+
+    return render(request, 'products.html', {
+        'products_by_category': products_by_category,
+    })

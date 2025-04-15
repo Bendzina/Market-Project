@@ -7,7 +7,8 @@ from app.models import Product, Sku, Productparams
 from .serializers import CartSerializer
 from rest_framework.permissions import IsAuthenticated
 from .serializers import CartItemSerializer, OrderSerializer
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
 
 
@@ -194,3 +195,12 @@ class CheckoutView(APIView):
             return Response({'status': 'error', 'message': str(e)}, status=500)
                 
 
+@login_required
+def cart_page(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_items = CartItem.objects.filter(cart=cart)
+    total = sum(item.quantity * item.sku.productid.price for item in cart_items)
+    return render(request, 'cart.html', {
+        'cart_items': cart_items,
+        'cart_total': total
+    })

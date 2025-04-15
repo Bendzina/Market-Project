@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Categories</title>
+  <style>
+    ul {
+      list-style-type: none;
+    }
+    li {
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Categories</h1>
+  <div id="category-tree"></div>
+
+  <script>
+    // რეკურსიული ფუნქცია ბუდობრივი კატეგორიების დასაგენერირებლად
+    function renderCategories(categories) {
+      let html = '<ul>';
+      categories.forEach(cat => {
+        html += `<li>${cat.name}`;
+        if (cat.subcategories.length > 0) {
+          html += renderCategories(cat.subcategories);
+        }
+        html += '</li>';
+      });
+      html += '</ul>';
+      return html;
+    }
+
+    // API-დან მონაცემის წამოღება
+    fetch('/app/categories/')  
+      .then(response => response.json())
+      .then(data => {
+        const tree = renderCategories(data);
+        document.getElementById('category-tree').innerHTML = tree;
+      })
+      .catch(error => console.error('Error fetching categories:', error));
+  </script>
+</body>
+</html>

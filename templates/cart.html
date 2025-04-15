@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}შენი კალათა{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>შენი კალათა</h2>
+
+  {% if cart_items %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>პროდუქტი</th>
+          <th>რაოდენობა</th>
+          <th>ფასი</th>
+          <th>ჯამი</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+          <tr>
+            <td>{{ item.sku.productid.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.sku.productid.price }} ₾</td>
+            <td>{{ item.quantity|multiply:item.sku.productid.price }} ₾</td>
+            <td>
+
+ 
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <h4>სულ: {{ cart_total }} ₾</h4>
+    <a href="{% url 'checkout' %}" class="btn btn-success">შეკვეთა</a>
+  {% else %}
+    <p>კალათა ცარიელია</p>
+  {% endif %}
+</div>
+{% endblock %}

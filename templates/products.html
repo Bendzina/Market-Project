@@ -1,0 +1,52 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block title %}Welcome to Market{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+  <h2 class="text-center mb-4">Welcome to Market</h2>
+
+  {% for category, products in products_by_category.items %}
+    <h3 class="text-primary">{{ category.name }}</h3>
+    <div class="row">
+      {% for product in products %}
+        <div class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm">
+            {% if product.images.all %}
+              <img src="{{ product.images.first.thumbnail.url }}" class="card-img-top" alt="{{ product.name }}">
+            {% else %}
+              <img src="https://via.placeholder.com/300x200?text=No+Image" class="card-img-top" alt="No Image">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ product.name }}</h5>
+              <p class="card-text"><strong>Price:</strong> {{ product.price }} ₾</p>
+              <p class="card-text"><strong>Brand:</strong> {{ product.brandid.brand }}</p>
+              {% if product.storeid %}
+                <p class="card-text"><strong>Store:</strong> {{ product.storeid.name }}</p>
+              {% endif %}
+              <div class="d-flex flex-wrap gap-2">
+                {% for image in product.images.all %}
+                {% if image.thumbnail %}
+                  <a href="{{ image.image.url }}" target="_blank">
+                    <img src="{{ image.thumbnail.url }}" width="60" height="60" class="img-thumbnail" alt="Product Image">
+                  </a>
+                {% endif %}
+              {% endfor %}
+              </div>
+            </div>
+            <div class="card-footer bg-white text-end d-flex justify-content-between">
+                <button class="btn btn-outline-primary btn-sm">დეტალურად</button>
+                <button class="btn btn-success btn-sm add-to-cart" data-product-id="{{ product.sku.id }}">კალათაში დამატება</button>
+              </div>
+              
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

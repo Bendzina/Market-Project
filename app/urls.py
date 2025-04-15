@@ -6,6 +6,8 @@ from rest_framework.routers import DefaultRouter
 from .views import search_products
 from django.conf.urls.static import static
 from django.conf import settings
+from .views import product_page  
+
 
 
 urlpatterns = [
@@ -55,12 +57,16 @@ urlpatterns = [
     path('products/<int:product_id>/images/', ProductImageUpload.as_view(), name='product-image-upload'),
     path('products/<int:product_id>/images/list/', ProductImageListView.as_view(), name='product-image-list'),
     path('products/images/<int:image_id>/delete/', ProductImageDelete.as_view(), name='product-image-delete'),
+    
+    path('products-page/', product_page, name='product-html-view'),
+
 
 ]
 
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
 # viewset
 router = DefaultRouter()
 router.register(r'products', ProductViewSet)

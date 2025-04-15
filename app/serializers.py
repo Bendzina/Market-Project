@@ -19,21 +19,56 @@ class ProductImageSerializer(serializers.ModelSerializer):
                 return None  # ან placeholder სურათის URL
         return None
 
-
-class ProductSerializer(serializers.ModelSerializer):
-    images = ProductImageSerializer(many=True, read_only=True)
+class ProductparamsSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = Productparams
+ 
         fields = '__all__'
 
 
 
+
+class SkuSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sku
+        exclude = ['productid']     
+        
+
+class ProductSerializer(serializers.ModelSerializer):
+    images = ProductImageSerializer(many=True, read_only=True)
+    params = ProductparamsSerializer(many=True, write_only=True, required=False)
+    sku = SkuSerializer(write_only=True, required=False)
+
+    class Meta:
+        model = Product
+        fields = '__all__'
+
+    def create(self, validated_data):
+        params_data = validated_data.pop('params', [])
+        sku_data = validated_data.pop('sku', None)
+        product = Product.objects.create(**validated_data)
+
+        # Product Params შექმნა
+        for param in params_data:
+            Productparams.objects.create(product=product, **param)
+
+        # SKU შექმნა
+        if sku_data:
+            Sku.objects.create(productid=product, **sku_data)
+
+        return product
+
+
 class CategorySerializer(serializers.ModelSerializer):
+    subcategories = serializers.SerializerMethodField() 
+    
     class Meta:
         model = Category
-        fields = ['id', 'name']
+        fields = ['id', 'name', 'subcategories']  # აქ subcategories დამატებულია
 
-
+    def get_subcategories(self, obj):
+        children = obj.subcategories.all()
+        return CategorySerializer(children, many=True).data
 
 class BrandsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,15 +82,6 @@ class CategoryparamsSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 
-class ProductparamsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Productparams
-        fields = '__all__'
-
-class SkuSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Sku
-        fields = ['id', 'productid']
 
 # რეგისტრაცია
 
