@@ -59,6 +59,9 @@ urlpatterns = [
     path('products/images/<int:image_id>/delete/', ProductImageDelete.as_view(), name='product-image-delete'),
     
     path('products-page/', product_page, name='product-html-view'),
+    
+    # Login
+    path('app/login/', LoginView.as_view(), name='login'),
 
 
 ]

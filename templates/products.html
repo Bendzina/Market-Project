@@ -1,5 +1,8 @@
 
 {% extends 'base.html' %}
+
+
+
 {% load static %}
 
 
@@ -40,7 +43,10 @@
             </div>
             <div class="card-footer bg-white text-end d-flex justify-content-between">
                 <button class="btn btn-outline-primary btn-sm">დეტალურად</button>
-                <button class="btn btn-success btn-sm add-to-cart" data-product-id="{{ product.sku.id }}">კალათაში დამატება</button>
+                <button class="btn btn-primary add-to-cart" data-product-id="{{ product.id }}">
+                  კალათაში დამატება
+              </button>
+              
               </div>
               
           </div>

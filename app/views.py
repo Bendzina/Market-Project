@@ -430,3 +430,7 @@ def product_page(request):
     return render(request, 'products.html', {
         'products_by_category': products_by_category,
     })
+    
+    
+def login_page(request):
+    return render(request, 'login.html')

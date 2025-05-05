@@ -42,18 +42,18 @@ class CartSerializer(serializers.ModelSerializer):
     def get_total_amount(self, obj):
         return sum(item.sku.productid.price * item.quantity for item in obj.cartitem_set.all())
     
-class OrderSerializer(serializers.ModelSerializer):
+class OrderItemSerializer(serializers.ModelSerializer):
     Product_name = serializers.CharField(source='product_name')
-    user_id = serializers.IntegerField(source='user.id', read_only=True)
-    items = CartItemSerializer(source='cartitem_set', many=True, read_only=True)
+    # user_id = serializers.IntegerField(source='user.id', read_only=True)
+    # items = CartItemSerializer(source='cartitem_set', many=True, read_only=True)
 
     class Meta:
         model = OrderItem
-        fields = ['id', 'user_id', 'Product_name', 'quantity', 'total_price', 'items']
+        fields = ['id',  'Product_name', 'quantity', 'price']
 
 class OrderSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(source= 'user_id', read_only=True)
-    order_items = OrderSerializer(many=True)
+    order_items = OrderItemSerializer(source='orderitem_set', many=True, read_only=True)
 
     class Meta:
         model = Order

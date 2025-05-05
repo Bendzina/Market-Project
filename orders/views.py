@@ -126,25 +126,25 @@ class OrderDetailView(APIView):
         except Order.DoesNotExist:
             return Response({'status': 'error', 'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
 
-class OrderCreateApi(APIView):
-    permission_classes = [IsAuthenticated]
-    def post(self, request):
-        serializer = OrderSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user) 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class OrderCreateApi(APIView):
+#     permission_classes = [IsAuthenticated]
+#     def post(self, request):
+#         serializer = OrderSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save(user=request.user) 
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-class AddToCartApi(APIView):
-    permission_classes = [IsAuthenticated]
+# class AddToCartApi(APIView):
+#     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        serializer = CartSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(user=request.user)  # Assign logged-in user
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         serializer = CartSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save(user=request.user)  # Assign logged-in user
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class CheckoutView(APIView):
