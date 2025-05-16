@@ -25,8 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('app/', include('app.urls')),
     path('orders/', include('orders.urls')), 
-    # path('login/', LoginView.as_view(), name='login'),
-
+    
+    
 
   
 ]

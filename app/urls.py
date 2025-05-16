@@ -1,14 +1,12 @@
 from django.urls import path
 from .views import ProductListView, ProductCreateView, ProductAPI, CategoryListView, CategoryDetailView, CategoryApi, BrandsDetailView, BrandsListView, BrandApi, CategoryparamsListView, CategoryparamsApi, CategoryparamsDetailView, ProductparamsListView, ProductparamsDetailView, ProductparamsApi, RegisterView, LoginView, SkuListView, SkuApi, SkuDetailView, ProductSearchApi, LogoutView, ProductImageListView, ProductImageDelete
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import ProductViewSet, BrandsViewSet, CategoryViewSet, ProductImageUpload
+from .views import ProductViewSet, BrandsViewSet, CategoryViewSet, ProductImageUpload, product_page, LoginView
 from rest_framework.routers import DefaultRouter
 from .views import search_products
 from django.conf.urls.static import static
 from django.conf import settings
-from .views import product_page  
-
-
+from django.views.generic import TemplateView
 
 urlpatterns = [
     # Product URLs
@@ -41,13 +39,17 @@ urlpatterns = [
     path('skus/<int:pk>/', SkuDetailView.as_view(), name='sku-detail'),
     path('skus-api/', SkuApi.as_view(), name='sku-api'),
     
-    # Token URLs
-    path('app/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('app/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # # Token URLs
+    # path('app/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('app/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+ 
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     # Authentication endpoints
     path('registrations/', RegisterView.as_view(), name='registrations'),
-    path('login/', LoginView.as_view(), name='login'),
+    path('app/login/', LoginView.as_view(), name='app-login'),
+    path('login/', TemplateView.as_view(template_name='login.html'), name='login-page'),
     path('logout/', LogoutView.as_view(), name='logout'),
 
     # Search API
@@ -60,8 +62,8 @@ urlpatterns = [
     
     path('products-page/', product_page, name='product-html-view'),
     
-    # Login
-    path('app/login/', LoginView.as_view(), name='login'),
+    # # Login
+    # path('login/', LoginView.as_view(), name='login'),
 
 
 ]

@@ -1,4 +1,5 @@
 from rest_framework.decorators import api_view
+from django.shortcuts import render, redirect
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from django_filters.rest_framework import DjangoFilterBackend
@@ -22,8 +23,9 @@ from django.core.exceptions import ValidationError
 from imagekit.cachefiles import ImageCacheFile
 from rest_framework.authentication import TokenAuthentication
 from django.shortcuts import render
-
-
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
+from django.contrib.auth.forms import AuthenticationForm
 
 
 # Product Views
@@ -41,20 +43,41 @@ class ProductListView(generics.ListAPIView):
     filterset_class = ProductFilter
 
 
+# class ProductAPI(APIView):
+#     permission_classes = [IsAuthenticated]
+#     def get(self, request):
+#         products = Product.objects.all()
+#         serializer = ProductSerializer(products, many=True)
+#         return Response(serializer.data)
+    
+#     # permission_classes = [SellerPermission]
+#     def post(self, request):
+#         serializer = ProductSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ProductAPI(APIView):
-    permission_classes = [IsAuthenticated]
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [SellerPermission()]
+        return [IsAuthenticated()]
+
     def get(self, request):
         products = Product.objects.all()
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
-    
-    permission_classes = [SellerPermission]
+
     def post(self, request):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 # Category Views
 class CategoryCreateView(CreateAPIView):
     permission_classes = [IsAdminUser]
@@ -195,8 +218,8 @@ class ProductparamsDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Productparams.objects.all()
     serializer_class = ProductparamsSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = ProductparamsFilter
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_class = ProductparamsFilter
 
 
 class ProductparamsApi(APIView):
@@ -304,7 +327,6 @@ class LoginView(APIView):
         print("Invalid credentials")
 
         return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-    
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -432,5 +454,5 @@ def product_page(request):
     })
     
     
-def login_page(request):
+def login_view(request):
     return render(request, 'login.html')

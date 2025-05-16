@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
-            fetch("/app/token/", {
+            fetch( "/app/token/",{
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     localStorage.setItem("access_token", data.access);
                     localStorage.setItem("refresh_token", data.refresh);
                     alert("შესვლა წარმატებით შესრულდა!");
-                    window.location.href = "/app/login/";  // ან სხვა ძირითადი გვერდი
+                    window.location.href = "/app/products-page/";  
                 } else {
                     alert("არასწორი მონაცემები!");
                 }
