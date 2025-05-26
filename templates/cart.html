@@ -1,40 +1,76 @@
-{% extends "base.html" %}
-{% block title %}შენი კალათა{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-  <h2>შენი კალათა</h2>
+<h2>🛒 თქვენი კალათი</h2>
 
-  {% if cart_items %}
-    <table class="table">
-      <thead>
-        <tr>
-          <th>პროდუქტი</th>
-          <th>რაოდენობა</th>
-          <th>ფასი</th>
-          <th>ჯამი</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for item in cart_items %}
-          <tr>
-            <td>{{ item.sku.productid.name }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>{{ item.sku.productid.price }} ₾</td>
-            <td>{{ item.quantity|multiply:item.sku.productid.price }} ₾</td>
-            <td>
+<div id="cart-items">
+    {% if cart_items %}
+        <ul>
+            {% for item in cart_items %}
+                <li>
+                    <strong>{{ item.product.name }}</strong> -
+                    რაოდენობა: {{ item.quantity }} -
+                    ფასი: {{ item.total_price }}₾
+                </li>
+            {% endfor %}
+        </ul>
 
- 
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <h4>სულ: {{ cart_total }} ₾</h4>
-    <a href="{% url 'checkout' %}" class="btn btn-success">შეკვეთა</a>
-  {% else %}
-    <p>კალათა ცარიელია</p>
-  {% endif %}
+        <p><strong>სულ თანხა:</strong> {{ total_price }}₾</p>
+        <form id="csrf-form">
+            {% csrf_token %}
+        </form>
+
+        <button id="checkout-btn">გადახდა</button>
+        <p id="checkout-message"></p>
+    {% else %}
+        <p>კალათი ცარიელია.</p>
+    {% endif %}
 </div>
+{% if cart_items %}
+  <ul>
+    {% for item in cart_items %}
+      <li>პროდუქტი: {{ item.product.name }} - რაოდენობა: {{ item.quantity }} - ფასი: {{ item.total_price }}₾</li>
+    {% endfor %}
+  </ul>
+  <p>სულ თანხა: {{ total_price }}₾</p>
+{% else %}
+  <p>კალათი ცარიელია.</p>
+{% endif %}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkoutBtn = document.getElementById("checkout-btn");
+
+        if (checkoutBtn) {
+            checkoutBtn.addEventListener("click", async function () {
+                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                try {
+                    const response = await fetch("{% url 'checkout' %}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": csrftoken
+                        },
+                        body: JSON.stringify({})
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.order_id) {
+                        document.getElementById("checkout-message").innerText = "✅ შეკვეთა წარმატებულია!";
+                        setTimeout(() => {
+                            window.location.href = `/order/${data.order_id}/`;
+                        }, 1500);
+                    } else {
+                        document.getElementById("checkout-message").innerText = "❌ " + (data.message || "შეცდომა მოხდა.");
+                    }
+                } catch (error) {
+                    document.getElementById("checkout-message").innerText = "❌ სერვერთან კავშირის შეცდომა.";
+                }
+            });
+        }
+    });
+</script>
+
 {% endblock %}

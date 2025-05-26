@@ -36,7 +36,7 @@ class ProductCreateView(CreateAPIView):
 
 
 class ProductListView(generics.ListAPIView):
-    permission_classes =[IsAuthenticated]
+    permission_classes =[AllowAny]
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]

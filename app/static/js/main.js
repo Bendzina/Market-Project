@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("logout").addEventListener("click", function () {
                 localStorage.clear();
                 alert("გამოსვლა შესრულდა");
-                window.location.href = "/login/";
+                window.location.href = "/app/login/"; ///აქ შევცვალე
             });
         } else {
             // არ შესული
@@ -126,6 +126,45 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.clear();
         }
     }
+// ========================== კალათის ნახვა ==========================
+const cartPage = document.getElementById("cart-items-container"); // ეს ელემენტი უნდა იყოს cart.html-ში
+
+if (cartPage) {
+    const accessToken = localStorage.getItem("access_token");
+
+    if (!accessToken) {
+        alert("გთხოვთ, გაიარეთ ავტორიზაცია კალათის სანახავად.");
+    } else {
+        fetch("/orders/cart/", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                "Content-Type": "application/json"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (Array.isArray(data) && data.length > 0) {
+                cartPage.innerHTML = "";
+                data.forEach(item => {
+                    const div = document.createElement("div");
+                    div.innerHTML = `
+                        <p>პროდუქტი: ${item.product.name}</p>
+                        <p>რაოდენობა: ${item.quantity}</p>
+                        <p>ფასი: ${item.product.price}₾</p>
+                        <hr>
+                    `;
+                    cartPage.appendChild(div);
+                });
+            } else {
+                cartPage.innerHTML = "<p>კალათა ცარიელია.</p>";
+            }
+        })
+        .catch(error => {
+            console.error("კალათის ჩატვირთვის შეცდომა:", error);
+        });
+    }
+}
 
     function getCookie(name) {
         let cookieValue = null;
@@ -142,3 +181,36 @@ document.addEventListener("DOMContentLoaded", function () {
         return cookieValue;
     }
 });
+const checkoutBtn = document.getElementById("checkout-btn");
+
+if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", function () {
+        const accessToken = localStorage.getItem("access_token");
+
+        if (!accessToken) {
+            alert("გთხოვთ, გაიაროთ ავტორიზაცია");
+            return;
+        }
+
+        fetch("/orders/cart/checkout/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`
+            },
+        })
+        .then(res => res.json())
+        .then(data => {
+            const messageDiv = document.getElementById("checkout-message");
+
+            if (data.status === "success") {
+                messageDiv.innerText = `შეკვეთა წარმატებით განხორციელდა. შეკვეთის ID: ${data.order_id}, თანხა: ${data.total_amount}₾`;
+            } else {
+                messageDiv.innerText = data.message || "შეცდომა გადახდისას.";
+            }
+        })
+        .catch(error => {
+            console.error("Checkout error:", error);
+        });
+    });
+}
