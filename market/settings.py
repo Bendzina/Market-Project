@@ -54,8 +54,6 @@ INSTALLED_APPS = [
     'orders',
     'imagekit',
     'appconf',
-    
-
     ]
 
 # დამატებულები
@@ -188,3 +186,6 @@ CACHES = {
 }
 
 LOGIN_URL = '/login/'
+
+
+# cd /Users/macbookair/Documents/dj/market

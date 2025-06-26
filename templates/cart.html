@@ -1,76 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>🛒 თქვენი კალათი</h2>
+<!-- templates/cart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Cart</h1>
 
-<div id="cart-items">
-    {% if cart_items %}
-        <ul>
-            {% for item in cart_items %}
-                <li>
-                    <strong>{{ item.product.name }}</strong> -
-                    რაოდენობა: {{ item.quantity }} -
-                    ფასი: {{ item.total_price }}₾
-                </li>
-            {% endfor %}
-        </ul>
+    <div id="cart-container">
+        <!-- აქ გამოჩნდება კალათის შიგთავსი -->
+    </div>
 
-        <p><strong>სულ თანხა:</strong> {{ total_price }}₾</p>
-        <form id="csrf-form">
-            {% csrf_token %}
-        </form>
+    <h3>Total: <span id="cart-total">0</span> ₾</h3>
 
-        <button id="checkout-btn">გადახდა</button>
-        <p id="checkout-message"></p>
-    {% else %}
-        <p>კალათი ცარიელია.</p>
-    {% endif %}
-</div>
-{% if cart_items %}
-  <ul>
-    {% for item in cart_items %}
-      <li>პროდუქტი: {{ item.product.name }} - რაოდენობა: {{ item.quantity }} - ფასი: {{ item.total_price }}₾</li>
-    {% endfor %}
-  </ul>
-  <p>სულ თანხა: {{ total_price }}₾</p>
-{% else %}
-  <p>კალათი ცარიელია.</p>
-{% endif %}
+    <button onclick="checkout()">Checkout</button>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const checkoutBtn = document.getElementById("checkout-btn");
-
-        if (checkoutBtn) {
-            checkoutBtn.addEventListener("click", async function () {
-                const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-                try {
-                    const response = await fetch("{% url 'checkout' %}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRFToken": csrftoken
-                        },
-                        body: JSON.stringify({})
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok && data.order_id) {
-                        document.getElementById("checkout-message").innerText = "✅ შეკვეთა წარმატებულია!";
-                        setTimeout(() => {
-                            window.location.href = `/order/${data.order_id}/`;
-                        }, 1500);
-                    } else {
-                        document.getElementById("checkout-message").innerText = "❌ " + (data.message || "შეცდომა მოხდა.");
-                    }
-                } catch (error) {
-                    document.getElementById("checkout-message").innerText = "❌ სერვერთან კავშირის შეცდომა.";
-                }
-            });
-        }
-    });
-</script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
 
 {% endblock %}
